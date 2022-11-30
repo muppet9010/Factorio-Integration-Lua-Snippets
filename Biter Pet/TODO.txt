@@ -1,0 +1,9 @@
+Bugs:
+    - Move the tick's being appended to messages to a debug toggle.
+	- When in combat the biters seem to stop tracking their target and charge to something new (in Mukkie stream). But in JD stream it seems less of an issue, so maybe Mukkie lost some code or changed leash range.
+	- Make the biters not be removable if they can't find a home nest.
+
+
+Add:
+	- Can we make the biters choose near by targets.
+	- Get enemy evo and have your pet as +2 enemy max size and then add bonus health if there isn't a +1 sized biter. Bonus health would be double biter regular health.
