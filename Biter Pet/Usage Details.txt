@@ -1,0 +1,23 @@
+# Features
+
+Creates a behemoth biter that follows the player around and protects them.
+This script has some features over a simple biter creation command:
+    - It will keep on following the player as they get in and out of vehicles.
+    - If the player dies the biter will stay at their body until they return to the biter to collect it again.
+    - The biter will follow the player within some set ranges when just moving around.
+    - When the biter enters combat it can stray much further from the player, but if it gets too far then it will break off combat and return to its master.
+    - The biter can be named as a nice touch for chat integrations in streaming.
+
+
+
+# Usage Notes
+
+- On the first line are the options that can be changed. At a minimum replace:
+    - `playerName` should be set to your own in-game name (case sensitive), so replace "muppet9010".
+    - `biterName` should be set to the name of the biter. The default value is "%%USERNAME%%" which is from the JS integration tool that JD-Plays uses and that tool replaces it for a name from his Twitch chat. Either replace this with a desired name of the biter from your own integration tool, set it to a static string value or just set it to a blank string `""`. A blank string will not raise any messages when the biter is killed.
+- The options on the first line that can be changed from default are:
+    - `biterNameColor` is the color of the label of the biter. It's a Lua table of the Red, Green, Blue and Alpha values in order. Values should all be between 0-1 or 0-255, but don't mix them.
+    - `biterType` is the type of biter to create.
+    - `returnRange` is how close to you the biter will choose a spot to move too when it actively returns to you. So when it's called back this is how close it comes before it considers itself returned.
+    - `followRange` is how far away from its master a biter will be before it considers it too far and returns to be within the heelRange. Its also the distance a biter can be reclaimed by its master after the master respawns.
+    - `combatMaxRange` is how far away the biter will happily be from its master when its in combat. If it gets further than this it will break off combat and return to its master.
