@@ -1,6 +1,7 @@
 # Features
 
 Creates a behemoth biter that follows the player around and protects them.
+
 This script has some features over a simple biter creation command:
     - It will keep on following the player as they get in and out of vehicles.
     - If the player dies the biter will stay at their body until they return to the biter to collect it again.
@@ -18,6 +19,6 @@ This script has some features over a simple biter creation command:
 - The options on the first line that can be changed from default are:
     - `biterNameColor` is the color of the label of the biter. It's a Lua table of the Red, Green, Blue and Alpha values in order. Values should all be between 0-1 or 0-255, but don't mix them.
     - `biterType` is the type of biter to create.
-    - `returnRange` is how close to you the biter will choose a spot to move too when it actively returns to you. So when it's called back this is how close it comes before it considers itself returned.
-    - `followRange` is how far away from its master a biter will be before it considers it too far and returns to be within the heelRange. Its also the distance a biter can be reclaimed by its master after the master respawns.
+    - `followRange` is how close to you the biter will move to when it actively returns to you. So when it's called back this is how close it comes before it considers itself returned.
+    - `wonderMaxRange` is how far away from its master a biter will be before it considers it too far and returns to be within the `followRange`. It's also the distance a biter can be reclaimed by its master after the master respawns.
     - `combatMaxRange` is how far away the biter will happily be from its master when its in combat. If it gets further than this it will break off combat and return to its master.

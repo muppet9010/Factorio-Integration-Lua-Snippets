@@ -1,5 +1,4 @@
 Bugs:
-	- Make the biters not be removable if they can't find a home nest.
 
 
 Add:
