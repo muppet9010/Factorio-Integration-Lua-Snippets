@@ -13,6 +13,7 @@ This script has some features over a simple biter creation command:
 Limitations:
     - The biter uses standard Biter AI to control it. This means it doesn't always attack the nearest things and can get stuck on silly things at times.
     - Biters can't open gates by default within Factorio. This would have to be changed by a mod, and this script can't affect it unfortunately.
+    - Biters will tend to attack things and then happily chase on to further away targets. Until they reach the `combatMaxRange` and are called all the way back to you. Think out of control dog chasing wildlife in field.
 
 
 # Usage Notes

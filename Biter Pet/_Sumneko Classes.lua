@@ -6,6 +6,7 @@
 ---@field _exploringMaxRange uint
 ---@field _combatMaxRange uint
 ---@field _calledBack boolean
+---@field _fighting boolean
 ---@field _following boolean
 ---@field _biterName string # Is either a name or empty string.
 ---@field _hasOwner boolean

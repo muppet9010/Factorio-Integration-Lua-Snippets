@@ -2,7 +2,7 @@ Bugs:
 
 
 Add:
-    - Move from game chat to labels on biters for their status. Need to track their position so we can do death label for a TTL. If they have a distraction currently we know they are in combat. Might need us to count for a while when they aren't in combat before we put their status back.
+    - Move from game chat to labels on biters for their status. Need to track their position so we can do death label for a TTL.
 	- Get enemy evo and have your pet as +2 enemy max size and then add bonus health if there isn't a +1 sized biter. Bonus health would be double biter regular health. - Maybe as separate version ?
 
 
