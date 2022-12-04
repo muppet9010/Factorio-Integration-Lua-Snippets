@@ -21,8 +21,8 @@ Limitations:
     - `playerName` should be set to your own in-game name (case sensitive), so replace "muppet9010".
     - `biterName` should be set to the name of the biter. The default value is "%%USERNAME%%" which is from the JS integration tool that JD-Plays uses and that tool replaces it for a name from his Twitch chat. Either replace this with a desired name of the biter from your own integration tool, set it to a static string value or just set it to a blank string `""`. A blank string will not raise any messages when the biter is killed.
 - The options on the first line that can be changed from default are:
-    - `biterNameColor` is the color of the label of the biter. It's a Lua table of the Red, Green, Blue and Alpha values in order. Values should all be between 0-1 or 0-255, but don't mix them.
-    - `biterNameSize` is the size of the text for the biter name (if present) and the biters state. A size of 0 will mean no label on the biters.
+    - `biterDetailsColor` is the color of the labels of the biter. It's a Lua table of the Red, Green, Blue and Alpha values in order. Values should all be between 0-1 or 0-255, but don't mix them.
+    - `biterDetailsSize` is the size of the text for the biter name (if present) and the biter's state. A size of 0 will mean no label on the biters.
     - `biterType` is the type of biter to create.
     - `closenessRange` is how close to you the biter will move to when it actively returns or follows you. So when it's called this is how close it comes before it considers itself returned.
     - `exploringMaxRange` is how far away from its master a biter can be before it considers itself too far and returns to be within the `closenessRange` distance from you. It's also the distance a biter can be reclaimed by its master after the master dies and respawns. This value can't be less than the `closenessRange` value plus 10 (how far biters will wonder around).
