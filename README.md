@@ -2,6 +2,8 @@
 
 A collection of Lua scripts for use with Factorio integration tools. These provide neat features that are complicated enough they can't just be casually typed, but not complicated/important enough to warrant inclusion in a mod.
 
+View each folder for its own `Usage Details.txt` file that will explain the feature and its options. Ignore any files in the folder starting with an underscore `_`, these are development related files.
+
 
 
 ## Coding Notes
