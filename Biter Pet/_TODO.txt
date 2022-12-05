@@ -2,8 +2,6 @@ Bugs:
 
 
 Add:
-	- Get enemy evo and have your pet as +2 enemy max size and then add bonus health if there isn't a +1 sized biter. Bonus health would be double biter regular health. - Maybe as separate version ?
 
 
 Future:
-    - Biters can't open gates. I need to to set the `can_open_gates` attribute on all the biter units prototypes. So add as a mod startup option to Muppet Streamer and add as note to Biter Pet documentation to enable this feature. `compilatron` has this flag by default and can open gates itself.

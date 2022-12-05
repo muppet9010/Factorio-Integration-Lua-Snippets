@@ -10,6 +10,7 @@ This script has some features over a simple biter creation command:
 - If the player dies the biter will stay at their body until they return to the biter to collect it again.
 - The biter will follow the player within some set ranges when just moving around.
 - When the biter enters combat it can stray much further from the player, but if it gets too far then it will break off combat and return to its master. This means if the player runs away from a biter base your pet will eventually follow assuming it is still alive.
+- The biter type is selected based on the enemy force evolution. It can also have bonus health based on enemy evolution.
 
 
 
@@ -40,16 +41,34 @@ The options on the first line that can be changed from default are:
 
 ### Optional biter pet type based on enemy evolution
 
-The second line defines the `biterSelection` which is a table of the type of biter your pet will be based on the evolution of the `enemy` force.
+The second line defines the `biterTypeSelection` which is a table of the type of biter your pet will be based on the evolution of the `enemy` force.
+
+The default value is to have a biter 1 type higher than the enemy can have.
 
 - The list has the evolution required to unlock the biter type as the key, with the biter type name as the value.
 - The evolution key must be wrapped in square brackets when provided as this is now Lua works.
-- The last biter type in the `biterSelection` list that has an evo requirement less than current enemy force evo will be selected. So having the entries in order of minimum to maximum evo needed is important.
+- The last entry in the `biterTypeSelection` list that has an evo requirement less than current enemy force evo will be selected. So having the entries in order of minimum to maximum evo needed is important.
 - Any `unit` prototype name can be used; in vanilla Factorio these are the biter and spitter types, plus compilatron.
 
 If you only want one biter type to always be selected then you can just set that type for enemy evolution of 0 and above:
 ```Lua
-local biterSelection = {[0]="behemoth-biter"};
+local biterTypeSelection = {[0]="behemoth-biter"};
+```
+
+### Optional biter pet bonus health based on enemy evolution
+
+The second line defines the `biterBonusHealthSelection` which is a table of bonus health your pet will get based on the evolution of the `enemy` force.
+
+The default value is to have bonus health equal to the biter (doubling their health), with 4 times the health when the enemy starts getting their own behemoth biters.
+
+- The list has the evolution required to unlock the biter type as the key, with the bonus health amount as the value.
+- The evolution key must be wrapped in square brackets when provided as this is now Lua works.
+- The last entry in the `biterBonusHealthSelection` list that has an evo requirement less than current enemy force evo will be selected. So having the entries in order of minimum to maximum evo needed is important.
+- Any value of 0 or greater is supported.
+
+If you don't want any health bonus then you can just set a 0 bonus health value for enemy evolution of 0 and above:
+```Lua
+local biterBonusHealthSelection = {[0]=0};
 ```
 
 ### Optional status message text to configure
@@ -69,8 +88,9 @@ The third line are the status messages that are shown on the biter (assuming `bi
 
 # Limitations
 
-- The biter uses standard Biter AI to control it. This means it doesn't always attack the nearest things and can get stuck on silly things at times.
-- Biters can't open gates by default within Factorio. This would have to be changed by a mod, and this script can't affect it unfortunately.
-- Biters will tend to attack things and then happily chase on to further away targets. Until they reach the `combatMaxRange` and are called all the way back to you. Think out of control dog chasing wildlife in field.
 - The reactions to the biters state only run at a set interval and so can be a fraction of a second behind in timing or location. This is due to this being a script and not a full blown mod.
+- The biter uses standard Biter AI to control it. This means it doesn't always attack the nearest things and can get stuck on silly things at times.
+- Biters can't open gates by default within Factorio. This can be changed by a setting in the Muppet Streamer mod, but unfortunately this script can't affect it at run time.
+- Biters will tend to attack things and then happily chase on to further away targets. Until they reach the `combatMaxRange` and are called all the way back to you. Think out of control dog chasing wildlife in field.
 - The biters can't have their map color changed upon creating or via this script. They will appear whatever color the unit's prototype color is set, so could be changed by a mod in the data stage.
+- The bonus health is applied to the Pet Biters every processing cycle. This means that if the biter goes from full health to dead during a single processing cycle the bonus health will be lost.
