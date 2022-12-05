@@ -13,15 +13,6 @@ This script has some features over a simple biter creation command:
 
 
 
-# Limitations
-
-- The biter uses standard Biter AI to control it. This means it doesn't always attack the nearest things and can get stuck on silly things at times.
-- Biters can't open gates by default within Factorio. This would have to be changed by a mod, and this script can't affect it unfortunately.
-- Biters will tend to attack things and then happily chase on to further away targets. Until they reach the `combatMaxRange` and are called all the way back to you. Think out of control dog chasing wildlife in field.
-- The reactions to the biters state only run at a set interval and so can be a fraction of a second behind in timing or location. This is due to this being a script and not a full blown mod.
-
-
-
 # Configuration
 
 ### Mandatory options to configure
@@ -41,7 +32,8 @@ The options on the first line that can be changed from default are:
 | --- | --- |
 | biterDetailsColor | Is the color of the labels of the biter. It's a Lua table of the Red, Green, Blue and Alpha values in order. Values should all be between 0-1 or 0-255, but don't mix them. |
 | biterDetailsSize | Is the size of the text for the biter name (if present) and the biter's state. A size of 0 will mean no label on the biters when they are alive or dead. |
-| biterDeathMessageDuration | Is how many ticks (1/60 second) that the biters death message label is shown on the biter for. |
+| biterDeathMessageDuration | Is how many ticks (1/60 second) that the biters death message label is shown on the biter for. A value of 0 means no death message is shown. |
+| biterDeathMessagePrint | If the death of a pet is announced in chat and if so who to. Options are: `"not"`, `"master"`, `"everyone"`. |
 | biterType | Is the type of biter to create. |
 | closenessRange | Is how close to you the biter will move to when it actively returns or follows you. So when it's called this is how close it comes before it considers itself returned. |
 | exploringMaxRange | Is how far away from its master a biter can be before it considers itself too far and returns to be within the `closenessRange` distance from you. It's also the distance a biter can be reclaimed by its master after the master dies and respawns. This value can't be less than the `closenessRange` value plus 10 (how far biters will wonder around). |
@@ -59,3 +51,13 @@ The second line are the status messages that are shown on the biter (assuming `b
 | biterStatusMessages_CallBack | Is when the biter has been called back from fighting enemies from far away to you. |
 | biterStatusMessages_GuardingCorpse | Is when the biter is guarding your corpse and awaiting your return to reclaim it. |
 | biterStatusMessages_Dead | Is when the biter has died. This message is shown over/near its corpse for the `biterDeathMessageDuration` setting duration of ticks. Note that this may not always be directly on the biter's corpse. |
+
+
+
+# Limitations
+
+- The biter uses standard Biter AI to control it. This means it doesn't always attack the nearest things and can get stuck on silly things at times.
+- Biters can't open gates by default within Factorio. This would have to be changed by a mod, and this script can't affect it unfortunately.
+- Biters will tend to attack things and then happily chase on to further away targets. Until they reach the `combatMaxRange` and are called all the way back to you. Think out of control dog chasing wildlife in field.
+- The reactions to the biters state only run at a set interval and so can be a fraction of a second behind in timing or location. This is due to this being a script and not a full blown mod.
+- The biters can't have their map color changed upon creating or via this script. They will appear whatever color the unit's prototype color is set, so could be changed by a mod in the data stage.

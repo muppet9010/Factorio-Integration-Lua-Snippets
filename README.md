@@ -6,6 +6,8 @@ View each folder for its own `Usage Details.txt` file that will explain the feat
 
 They are provided as scripts and not as part of a mod as some users will want to make changes to them to fit their specific play through or other mods in use. They may even want to remove or add features to the scripts. As a script I am able to develop them quicker in a lighter fashion than a modded feature as I don't have to cater for every edge case another mod could generate within them, you can amend them yourself for this.
 
+Each script file has a version number variable at the very end of the Lua code. This will correspond to the Releases in Github per feature.
+
 
 
 ## Coding Notes
