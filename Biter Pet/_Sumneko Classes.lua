@@ -21,6 +21,7 @@
 ---@field _biterDetailsColor Color
 ---@field _biterNameRenderId? uint64 # The render ID of the biters name.
 ---@field _biterStateRenderId? uint64 # The render ID of the biters state text.
+---@field _biterHealthRenderId? uint64 # The render ID of the biters state text.
 ---@field _biterDeathMessageDuration uint # How many ticks the biter's death message is shown for.
 ---@field _biterDeathMessagePrint "not"|"master"|"everyone"
 ---@field _biterStatusMessages_Wondering string[]
