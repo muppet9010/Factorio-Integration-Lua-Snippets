@@ -2,6 +2,6 @@ Bugs:
 
 
 Add:
-
+	- Look at making pet run twice per second. Check where UPS usage is and any improvements.
 
 Future:
