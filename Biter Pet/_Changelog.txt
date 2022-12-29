@@ -1,0 +1,16 @@
+Version 1.0.1 - 06-12-2022
+--------------------------
+
+- Death messages can be printed in chat again, in addition to as a label near the dead biter.
+- Biter selection is from a table based on enemy force evolution, rather than being hard coded.
+- Biters can have health bonus based on enemy force evolution. If enabled they get a combined real and bonus health bar above them. Bonus health regenerates at the same speed as a biters real health once it is fully healed.
+- Biter labels and health bar are now dynamically around the edge (top and bottom) of a biter's graphics. Rather than being on top of the biter. This isn't quite perfect in all cases, but is close given I am reliant on imperfect data.
+- Additional limitations and some workarounds listed in documentation.
+
+
+
+Version 1.0.0 - 04-12-2022
+--------------------------
+
+- Biter Pet in its first release state. It is fully documented and all customisable settings are on the first lines of the script.
+- The script is provided in a compressed form so its easier to copy/paste in to integration tools/script files.
