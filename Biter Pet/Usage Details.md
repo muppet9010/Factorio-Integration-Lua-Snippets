@@ -19,9 +19,11 @@ Requires the Muppet Streamer mod: https://mods.factorio.com/mod/muppet_streamer
 
 # Configuration
 
+All options are at the start of the script.
+
 ### Mandatory options to configure
 
-On the first line are the options that can be changed. At a minimum replace:
+The options that must be changed:
 
 | Setting Name | Description |
 | --- | --- |
@@ -30,7 +32,7 @@ On the first line are the options that can be changed. At a minimum replace:
 
 ### Optional options to configure
 
-The options on the first line that can be changed from default are:
+The general options that can be changed from default are:
 
 | Setting Name | Description |
 | --- | --- |
@@ -44,7 +46,7 @@ The options on the first line that can be changed from default are:
 
 ### Optional biter pet type based on enemy evolution
 
-The second line defines the `biterTypeSelection` which is a table of the type of biter your pet will be based on the evolution of the `enemy` force.
+The `biterTypeSelection` option is a table of the type of biter your pet will be based on the evolution of the `enemy` force.
 
 The default setting is to have a biter 1 type higher than the enemy can have.
 
@@ -60,7 +62,7 @@ local biterTypeSelection = {[0]="behemoth-biter"};
 
 ### Optional biter pet bonus health based on enemy evolution
 
-The second line defines the `biterBonusHealthSelection` which is a table of bonus health your pet will get based on the evolution of the `enemy` force.
+The `biterBonusHealthSelection` option is a table of bonus health your pet will get based on the evolution of the `enemy` force.
 
 The default setting is to have bonus health equal to the biter (doubling their health), with 4 times the health when the enemy starts getting their own behemoth biters.
 
@@ -77,7 +79,7 @@ local biterBonusHealthSelection = {[0]=0};
 
 ### Optional status message text to configure
 
-The third line are the status messages that are shown on the biter (assuming `biterDetailsSize` setting is above 0). A random message from the appropriate state message array is selected for showing when the biter enters each state. You can have as many entries as you like in a state's message array, but but have at least 1 in each.
+The status messages that are shown on the biter (assuming `biterDetailsSize` setting is above 0) are configurable with the below setting names. A random message from the appropriate state message array is selected for showing when the biter enters each state. You can have as many entries as you like in a state's message array, but but have at least 1 in each. The status messages some with some generic "pet" type messages.
 
 | Setting Name | Description |
 | --- | --- |
