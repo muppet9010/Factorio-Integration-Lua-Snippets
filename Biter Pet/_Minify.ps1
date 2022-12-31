@@ -1,5 +1,4 @@
-# TODO: update
-# This just replaces code variables listed prior to manual minification. Its a manual list and so needs to be updated for each new version.
+# This replaces hard coded code variables with minimal text strings prior to automated minification. Its a manual list and so needs to be updated for each new version.
 # This minify will remove the debug code blocks from the script entirely. However, it will only handle `if end` blocks when the if part is just the data object variable `data._debug`. And it won;t handle if there are any `if` blocks within it, as it will just stop at the first `end` found.
 
 
@@ -153,7 +152,7 @@ foreach ($entry in $generalTextsToPass.GetEnumerator()) {
     $value = $entry.Value
 
     # Remove any Sumneko TypeDefs and any comments.
-    $value = $value -replace '--\[\[.*?\]\]', ''
+    $value = $value -replace "--\[\[.*?\]\](`r`n)*", ''
 
     # Removes any extra spacer lines (empty line gaps).
     $value = $value -replace "`r`n`r`n", "`r`n"
@@ -172,7 +171,13 @@ foreach ($entry in $generalTextsToPass.GetEnumerator()) {
 # Remove the line breaks, but put a space for readability in.
 $settingText = $settingText -replace "`r`n", '; '
 
-# TODO: make the line spacing for the settings.
+# Add the line spacing for the setting groups.
+$settingText = $settingText -replace '(local biterTypeSelection =)', ("`r`n" + '${1}')
+$settingText = $settingText -replace '(local biterStatusMessages_Wondering)', ("`r`n" + '${1}')
+
+# Cleanse any trailing spaces.
+$settingText = $settingText -replace "(; `r`n)", ";`r`n"
+$settingText = $settingText -replace "(; $)", ";"
 
 
 # ------------------------------------------
@@ -180,7 +185,7 @@ $settingText = $settingText -replace "`r`n", '; '
 # ------------------------------------------
 
 # Remove any debug blocks - Only handles debug if blocks that have no depth to them.
-$codeText = $codeText -replace 'if v\d+._debug then(?:(\s|\S|/n|/r))*?end', ''
+$codeText = $codeText -replace "if v\d+._debug then(?:(\s|\S|/n|/r))*?end(`r`n)*", ''
 $codeText = $codeText -replace '_debug = [^,]+,', ''
 
 # Remove the line breaks.
@@ -189,8 +194,8 @@ $codeText = $codeText -replace "`r`n", ';' # Somehow this leaves a trailing `\r\
 # Remove the space around operators.
 $codeText = $codeText -replace '\s*([=~<>,+-\/*^{}])\s*', '${1}'
 
-# TODO: Push the version on to its own line.
-
+# Push the version on to its own line.
+$codeText = $codeText -replace '(local version=.*;)$', ("`r`n" + '${1}')
 
 
 
@@ -199,4 +204,4 @@ $codeText = $codeText -replace '\s*([=~<>,+-\/*^{}])\s*', '${1}'
 # ------------------------------------------------------------------------------------------------
 
 $outputText = $commandCallText + ' ' + $settingText + "`r`n" + $codeText
-$outputText | Out-File -FilePath '.\Biter Pet\Biter Pet - Test.lua'
+$outputText | Out-File -FilePath '.\Biter Pet\Biter Pet - Minified.lua'
