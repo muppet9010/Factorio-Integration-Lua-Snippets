@@ -1,6 +1,26 @@
+# TODO: update
 # This just replaces code variables listed prior to manual minification. Its a manual list and so needs to be updated for each new version.
+# This minify will remove the debug code blocks from the script entirely. However, it will only handle `if end` blocks when the if part is just the data object variable `data._debug`. And it won;t handle if there are any `if` blocks within it, as it will just stop at the first `end` found.
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+# Get the full text of the script as one text block.
+# ------------------------------------------------------------------------------------------------
 
 $fullText = Get-Content -Path ".\Biter Pet\Biter Pet - Readable.lua" -Raw
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+# Minify our list of variables and class fields. This is a static list so we can avoid conflicting with any built in Factorio key names, i.e. `game`.
+# ------------------------------------------------------------------------------------------------
+
+# ------------------------------------------
+# Manually made list of variables to minify to a variable number.
+# ------------------------------------------
 
 $variableNamesToReplace = [System.Collections.ArrayList]::new()
 $variableNamesToReplace.Add("playerObj") > $null
@@ -68,6 +88,10 @@ $variableNamesToReplace.Add("_biterStatusMessages_GuardingCorpse") > $null
 $variableNamesToReplace.Add("_biterStatusMessages_Dead") > $null
 # $variableNamesToReplace.Add("") > $null
 
+# ------------------------------------------
+# Do each combination of preceeding and trailing characters for our variable names.
+# ------------------------------------------
+
 for ($i = 0; $i -lt $variableNamesToReplace.Count; $i++) {
     $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + " "), (" v" + $i + " ")
     $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + ","), (" v" + $i + ",")
@@ -84,6 +108,12 @@ for ($i = 0; $i -lt $variableNamesToReplace.Count; $i++) {
 
     $fullText = $fullText -replace ("\[" + $variableNamesToReplace[$i] + "\]"), ("[v" + $i + "]")
 
+    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + " "), ("#v" + $i + " ")
+    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + ","), ("#v" + $i + ",")
+    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + "\r\n"), ("#v" + $i + "`r`n")
+    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + "\)"), ("#v" + $i + ")")
+    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + "\."), ("#v" + $i + ".")
+
     $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + " "), (".v" + $i + " ")
     $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + ","), (".v" + $i + ",")
     $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + "\r\n"), (".v" + $i + "`r`n")
@@ -92,4 +122,81 @@ for ($i = 0; $i -lt $variableNamesToReplace.Count; $i++) {
     $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + "\)"), (".v" + $i + ")")
 }
 
-$fullText | Out-File -FilePath ".\Biter Pet\Biter Pet - Test.lua"
+
+
+
+# ------------------------------------------------------------------------------------------------
+# Automate the minification of the content.
+# ------------------------------------------------------------------------------------------------
+
+
+# ------------------------------------------
+# Get the different sections of the code before we strip out the commends.
+# ------------------------------------------
+
+$splits = $fullText -split "`r`n", 2
+$commandCallText = $splits[0]
+$currentRemaingText = $splits[1]
+
+$splits = $currentRemaingText -split "--\[\[ CODE START \]\]`r`n", 2
+$settingText = $splits[0]
+$codeText = $splits[1]
+
+
+# ------------------------------------------
+# Do the file wide cleaning.
+# ------------------------------------------
+
+$generalTextsToPass = @{settingText = $settingText
+    codeText = $codeText}
+foreach ($entry in $generalTextsToPass.GetEnumerator()) {
+    $value = $entry.Value
+
+    # Remove any Sumneko TypeDefs and any comments.
+    $value = $value -replace '--\[\[.*?\]\]', ''
+
+    # Removes any extra spacer lines (empty line gaps).
+    $value = $value -replace "`r`n`r`n", "`r`n"
+
+    # Remove any indentation of 2 or more spaces.
+    $value = $value -replace '( ){2,}', ''
+
+    Set-Variable -Name $entry.Key -Value $value
+}
+
+
+# ------------------------------------------
+# Settings cleaning.
+# ------------------------------------------
+
+# Remove the line breaks, but put a space for readability in.
+$settingText = $settingText -replace "`r`n", '; '
+
+# TODO: make the line spacing for the settings.
+
+
+# ------------------------------------------
+# Code cleaning.
+# ------------------------------------------
+
+# Remove any debug blocks - Only handles debug if blocks that have no depth to them.
+$codeText = $codeText -replace 'if v\d+._debug then(?:(\s|\S|/n|/r))*?end', ''
+$codeText = $codeText -replace '_debug = [^,]+,', ''
+
+# Remove the line breaks.
+$codeText = $codeText -replace "`r`n", ';' # Somehow this leaves a trailing `\r\n` I can't remove.
+
+# Remove the space around operators.
+$codeText = $codeText -replace '\s*([=~<>,+-\/*^{}])\s*', '${1}'
+
+# TODO: Push the version on to its own line.
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+# Write out the file.
+# ------------------------------------------------------------------------------------------------
+
+$outputText = $commandCallText + ' ' + $settingText + "`r`n" + $codeText
+$outputText | Out-File -FilePath '.\Biter Pet\Biter Pet - Test.lua'

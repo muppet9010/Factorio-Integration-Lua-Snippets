@@ -16,6 +16,7 @@ local biterStatusMessages_Fighting = { "Off catching you a present", "Playing wi
 local biterStatusMessages_CallBack = { "Aww bed time already ?", "Bringing you back a bloodied present" }
 local biterStatusMessages_GuardingCorpse = { "Defending your corpse for your return", "Too dumb to notice you've died" }
 local biterStatusMessages_Dead = { "They were a loyal dumb beast to the end", "Has gone to a better place to forever chase small squishy creatures" }
+
 --[[ CODE START ]]
 local playerObj = game.get_player(playerName)
 if playerObj == nil then

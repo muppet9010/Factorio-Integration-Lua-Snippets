@@ -17,8 +17,8 @@ for ($i = 0; $i -lt $fullTextLines.Count; $i++) {
 $commandCallText = $fullTextLines[0]
 
 # Handle the setting lines.
-$settingsStringBuilder = New-Object -TypeName "System.Text.StringBuilder"
-$settingVariableNames = @{}
+$settingsStringBuilder = [System.Text.StringBuilder]::new()
+$settingVariableNames = [System.Collections.Hashtable]::new()
 while ($true) {
     $lineLastChecked++
     $textLine = $fullTextLines[$lineLastChecked]
@@ -40,9 +40,10 @@ while ($true) {
 $settingText = $settingsStringBuilder.ToString()
 
 # Handle the code lines.
-$lineLastChecked++ # Skip the first line as it's the CODE START tag line.
-$codeStringBuilder = New-Object -TypeName "System.Text.StringBuilder"
-$codeMinifiedVariableNames = @{}
+
+# First find all the variables and fields of
+$codeStringBuilder = [System.Text.StringBuilder]::new()
+$codeMinifiedVariableNames = [System.Collections.Hashtable]::new()
 while ($lineLastChecked -le $fullTextLines.Count) {
     $lineLastChecked++
     $textLine = $fullTextLines[$lineLastChecked]
@@ -52,7 +53,7 @@ while ($lineLastChecked -le $fullTextLines.Count) {
     while ($startOfVariablePos -ge 0) {
         # TODO this is a WIP area - but just realised how much work it is.
         $startOfVariablePos += 6 # The length of "local ".
-        $variable = $textLine.Substring($startOfVariablePos, $textLine.indexOf("=", $startOfVariablePos)-$startOfVariablePos)
+        $variable = $textLine.Substring($startOfVariablePos, $textLine.indexOf("=|\r\n", $startOfVariablePos)-$startOfVariablePos)
         $variable = $variable.Trim() # There may be a trailing space, based on if there was one that went in between the variable name and the "=" sign.
     }
 
