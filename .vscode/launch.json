@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Minify PowerShell Script",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${file}",
+            "cwd": "${cwd}"
+        },
+        {
             "type": "factoriomod",
             "request": "launch",
             "name": "Factorio Mod Debug",
