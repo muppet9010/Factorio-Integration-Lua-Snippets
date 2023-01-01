@@ -1,4 +1,4 @@
-# This replaces hard coded code variables with minimal text strings prior to automated minification. Its a manual list and so needs to be updated for each new version.
+# This replaces variable names and Delayed Lua Data field names with minimal text strings prior to automated minification. It's a dynamically generated list based on the comment tags to seperate out the code areas with different handling in each.
 # This minify will remove the debug code blocks from the script entirely. However, it will only handle `if end` blocks when the if part is just the data object variable `data._debug`. And it won;t handle if there are any `if` blocks within it, as it will just stop at the first `end` found.
 
 
@@ -14,111 +14,131 @@ $fullText = Get-Content -Path ".\Biter Pet\Biter Pet - Readable.lua" -Raw
 
 
 # ------------------------------------------------------------------------------------------------
-# Minify our list of variables and class fields. This is a static list so we can avoid conflicting with any built in Factorio key names, i.e. `game`.
+# Initial cleans before we review variables.
 # ------------------------------------------------------------------------------------------------
 
+# Remove any debug blocks - Only handles debug if blocks that have no depth to them.
+$fullText = $fullText -replace "if data._debug then(?:(\s|\S|/n|/r))*?end(`r`n)*", ''
+$fullText = $fullText -replace '_debug = [^,]+,', ''
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+# Minify our list of variables and class fields.
+# ------------------------------------------------------------------------------------------------
+
+
 # ------------------------------------------
-# Manually made list of variables to minify to a variable number.
+# Generated list of variables to minify to a variable number.
 # ------------------------------------------
 
-$variableNamesToReplace = [System.Collections.ArrayList]::new()
-$variableNamesToReplace.Add("playerObj") > $null
-$variableNamesToReplace.Add("biterSurface") > $null
-$variableNamesToReplace.Add("playerPosition") > $null
-$variableNamesToReplace.Add("biterType") > $null
-$variableNamesToReplace.Add("biterBonusHealthMax") > $null
-$variableNamesToReplace.Add("biterHealingPerSecond") > $null
-$variableNamesToReplace.Add("biterMaxHealth") > $null
-$variableNamesToReplace.Add("biterPrototype") > $null
-$variableNamesToReplace.Add("enemyEvo") > $null
-$variableNamesToReplace.Add("evoReq") > $null
-$variableNamesToReplace.Add("thisBonusHealth") > $null
-$variableNamesToReplace.Add("thisBiterType") > $null
-$variableNamesToReplace.Add("biterSpawnPosition") > $null
-$variableNamesToReplace.Add("biter") > $null
-$variableNamesToReplace.Add("biterNameRenderId") > $null
-$variableNamesToReplace.Add("biterStateRenderId") > $null
-$variableNamesToReplace.Add("biterHealthRenderId") > $null
-$variableNamesToReplace.Add("stickerBox") > $null
-$variableNamesToReplace.Add("stickerBoxLargestSize") > $null
-$variableNamesToReplace.Add("biterAiSettings") > $null
-$variableNamesToReplace.Add("followPlayerFunc") > $null
-$variableNamesToReplace.Add("data") > $null
-$variableNamesToReplace.Add("deathMessage") > $null
-$variableNamesToReplace.Add("biterHealth") > $null
-$variableNamesToReplace.Add("healthBelowMax") > $null
-$variableNamesToReplace.Add("updateHealthBar") > $null
-$variableNamesToReplace.Add("healthToRecover") > $null
-$variableNamesToReplace.Add("x_scale_multiplier") > $null
-$variableNamesToReplace.Add("targetEntity") > $null
-$variableNamesToReplace.Add("biterPosition") > $null
-$variableNamesToReplace.Add("targetEntityPosition") > $null
-$variableNamesToReplace.Add("biterPlayerDistance") > $null
-$variableNamesToReplace.Add("_playerObj") > $null
-$variableNamesToReplace.Add("_biter") > $null
-$variableNamesToReplace.Add("_biterSurface") > $null
-$variableNamesToReplace.Add("_biterBonusHealthMax") > $null
-$variableNamesToReplace.Add("_biterBonusHealthCurrent") > $null
-$variableNamesToReplace.Add("_biterHealingPerSecond") > $null
-$variableNamesToReplace.Add("_biterMaxHealth") > $null
-$variableNamesToReplace.Add("_followPlayerFuncDump") > $null
-$variableNamesToReplace.Add("_closenessRange") > $null
-$variableNamesToReplace.Add("_exploringMaxRange") > $null
-$variableNamesToReplace.Add("_combatMaxRange") > $null
-$variableNamesToReplace.Add("_calledBack") > $null
-$variableNamesToReplace.Add("_following") > $null
-$variableNamesToReplace.Add("_fighting") > $null
-$variableNamesToReplace.Add("_biterName") > $null
-$variableNamesToReplace.Add("_hasOwner") > $null
-$variableNamesToReplace.Add("_lastPosition") > $null
-#$variableNamesToReplace.Add("_debug") > $null # Don't remove as we want to detect the code blocks and delete them.
-$variableNamesToReplace.Add("_biterDetailsSize") > $null
-$variableNamesToReplace.Add("_biterDetailsColor") > $null
-$variableNamesToReplace.Add("_biterNameRenderId") > $null
-$variableNamesToReplace.Add("_biterStateRenderId") > $null
-$variableNamesToReplace.Add("_biterHealthRenderId") > $null
-$variableNamesToReplace.Add("_biterDeathMessageDuration") > $null
-$variableNamesToReplace.Add("_biterDeathMessagePrint") > $null
-$variableNamesToReplace.Add("_biterStatusMessages_Wondering") > $null
-$variableNamesToReplace.Add("_biterStatusMessages_Following") > $null
-$variableNamesToReplace.Add("_biterStatusMessages_Fighting") > $null
-$variableNamesToReplace.Add("_biterStatusMessages_CallBack") > $null
-$variableNamesToReplace.Add("_biterStatusMessages_GuardingCorpse") > $null
-$variableNamesToReplace.Add("_biterStatusMessages_Dead") > $null
-# $variableNamesToReplace.Add("") > $null
+$variableNamesToReplace = [System.Collections.Hashtable]::new()#[System.Collections.ArrayList]::new()
+
+$splits = $fullText -split "--\[\[ CODE START \]\]`r`n", 2
+$initialSettingText = $splits[0] # We just ignore this section when looking for variable names at present, but need to still split it out.
+$splits = $splits[1] -split "--\[\[ Delayed Lua Function \]\]`r`n", 2
+$initialCodeText = $splits[0]
+$splits = $splits[1] -split "--\[\[ Delayed Lua Data \]\]`r`n", 2
+$initialLuaFunctionText = $splits[0]
+$splits = $splits[1] -split "--\[\[ Version Info \]\]`r`n", 2
+$initialLuaDataText = $splits[0]
+
+# Extract the variable names.
+function ExtractVariableNames {
+    param (
+        [Microsoft.PowerShell.Commands.MatchInfo]$variableStrings
+    )
+
+    foreach ($variableMatch in $variableStrings.Matches) {
+        for ($variableMatchGroupIndex = 1; $variableMatchGroupIndex -lt $variableMatch.Groups.Count; $variableMatchGroupIndex++) {
+            $variableMatchString = $variableMatch.Groups[$variableMatchGroupIndex].Value.Trim()
+            $variables = $variableMatchString | Select-String -Pattern "([^, ]+)" -AllMatches
+            foreach ($variable in $variables.Matches) {
+                $variableNamesToReplace[$variable.Value] = $true# > $null
+            }
+        }
+    }
+}
+
+# ------------------------------------------
+# Code Text
+# ------------------------------------------
+
+# Variables with and without values set, as a single or comma seperated string.
+$variableStrings = $initialCodeText | Select-String -Pattern "local ([^=\n]+)(?: =|[^=]\n)?" -AllMatches
+ExtractVariableNames -variableStrings $variableStrings
+#$variableStrings = $initialCodeText | Select-String -Pattern "local (.+) =" # Variables with values set.
+#$variableStrings = $initialCodeText | Select-String -Pattern "local (.+) \n" # Variables without values set.
+
+# Variables set within a `for`, as a single or comma seperated string.
+$variableStrings = $initialCodeText | Select-String -Pattern "for ([^,]+), ([^,]+) in" -AllMatches
+ExtractVariableNames -variableStrings $variableStrings
+
+# ------------------------------------------
+# Delayed Lua Function Text
+# ------------------------------------------
+
+# Variables with and without values set, as a single or comma seperated string.
+$variableStrings = $initialLuaFunctionText | Select-String -Pattern "local ([^=\n]+)(?: =|[^=]\n)?" -AllMatches
+ExtractVariableNames -variableStrings $variableStrings
+
+# Variables set within a `for`, as a single or comma seperated string.
+$variableStrings = $initialLuaFunctionText | Select-String -Pattern "for ([^,]+), ([^,]+) in" -AllMatches
+ExtractVariableNames -variableStrings $variableStrings
+
+# ------------------------------------------
+# Delayed Lua Data Text
+# ------------------------------------------
+
+# Variables with and without values set, as a single or comma seperated string.
+$variableStrings = $initialLuaDataText | Select-String -Pattern "local ([^=\n]+)(?: =|[^=]\n)?" -AllMatches
+ExtractVariableNames -variableStrings $variableStrings
+
+# Variables set within a `for`, as a single or comma seperated string.
+$variableStrings = $initialLuaDataText | Select-String -Pattern "for ([^,]+), ([^,]+) in" -AllMatches
+ExtractVariableNames -variableStrings $variableStrings
+
+# The Data object's keys (but not values). This captures a lot of empty matches due to the odd way regex matches are returned, but our code already ignores them effectively as it ignores the first inner data object, and these empty matches only have 1 inner data object.
+$variableStrings = $initialLuaDataText | Select-String -Pattern "(?: (?<fieldName>\S+) =)*" -AllMatches
+
+ExtractVariableNames -variableStrings $variableStrings
 
 # ------------------------------------------
 # Do each combination of preceeding and trailing characters for our variable names.
 # ------------------------------------------
 
-for ($i = 0; $i -lt $variableNamesToReplace.Count; $i++) {
-    $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + " "), (" v" + $i + " ")
-    $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + ","), (" v" + $i + ",")
-    $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + "\r\n"), (" v" + $i + "`r`n")
-    $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + "\)"), (" v" + $i + ")")
-    $fullText = $fullText -replace (" " + $variableNamesToReplace[$i] + "\."), (" v" + $i + ".")
+$i = 0
+foreach ($variableName in $variableNamesToReplace.Keys) {
+    $fullText = $fullText -replace (" " + $variableName + " "), (" v" + $i + " ")
+    $fullText = $fullText -replace (" " + $variableName + ","), (" v" + $i + ",")
+    $fullText = $fullText -replace (" " + $variableName + "\r\n"), (" v" + $i + "`r`n")
+    $fullText = $fullText -replace (" " + $variableName + "\)"), (" v" + $i + ")")
+    $fullText = $fullText -replace (" " + $variableName + "\."), (" v" + $i + ".")
 
-    $fullText = $fullText -replace ("\(" + $variableNamesToReplace[$i] + " "), ("(v" + $i + " ")
-    $fullText = $fullText -replace ("\(" + $variableNamesToReplace[$i] + ","), ("(v" + $i + ",")
-    $fullText = $fullText -replace ("\(" + $variableNamesToReplace[$i] + "\)"), ("(v" + $i + ")")
-    $fullText = $fullText -replace ("\(" + $variableNamesToReplace[$i] + "\."), ("(v" + $i + ".")
+    $fullText = $fullText -replace ("\(" + $variableName + " "), ("(v" + $i + " ")
+    $fullText = $fullText -replace ("\(" + $variableName + ","), ("(v" + $i + ",")
+    $fullText = $fullText -replace ("\(" + $variableName + "\)"), ("(v" + $i + ")")
+    $fullText = $fullText -replace ("\(" + $variableName + "\."), ("(v" + $i + ".")
 
-    $fullText = $fullText -replace ("\r\n" + $variableNamesToReplace[$i] + "\."), ("`r`nv" + $i + ".") # Have to use preivous line endings as the start of line detection `^` didn't trigger.
+    $fullText = $fullText -replace ("\r\n" + $variableName + "\."), ("`r`nv" + $i + ".") # Have to use preivous line endings as the start of line detection `^` didn't trigger.
 
-    $fullText = $fullText -replace ("\[" + $variableNamesToReplace[$i] + "\]"), ("[v" + $i + "]")
+    $fullText = $fullText -replace ("\[" + $variableName + "\]"), ("[v" + $i + "]")
 
-    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + " "), ("#v" + $i + " ")
-    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + ","), ("#v" + $i + ",")
-    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + "\r\n"), ("#v" + $i + "`r`n")
-    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + "\)"), ("#v" + $i + ")")
-    $fullText = $fullText -replace ("#" + $variableNamesToReplace[$i] + "\."), ("#v" + $i + ".")
+    $fullText = $fullText -replace ("#" + $variableName + " "), ("#v" + $i + " ")
+    $fullText = $fullText -replace ("#" + $variableName + ","), ("#v" + $i + ",")
+    $fullText = $fullText -replace ("#" + $variableName + "\r\n"), ("#v" + $i + "`r`n")
+    $fullText = $fullText -replace ("#" + $variableName + "\)"), ("#v" + $i + ")")
+    $fullText = $fullText -replace ("#" + $variableName + "\."), ("#v" + $i + ".")
 
-    $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + " "), (".v" + $i + " ")
-    $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + ","), (".v" + $i + ",")
-    $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + "\r\n"), (".v" + $i + "`r`n")
-    $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + "\."), (".v" + $i + ".")
-    $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + "\["), (".v" + $i + "[")
-    $fullText = $fullText -replace ("\." + $variableNamesToReplace[$i] + "\)"), (".v" + $i + ")")
+    $fullText = $fullText -replace ("\." + $variableName + " "), (".v" + $i + " ")
+    $fullText = $fullText -replace ("\." + $variableName + ","), (".v" + $i + ",")
+    $fullText = $fullText -replace ("\." + $variableName + "\r\n"), (".v" + $i + "`r`n")
+    $fullText = $fullText -replace ("\." + $variableName + "\."), (".v" + $i + ".")
+    $fullText = $fullText -replace ("\." + $variableName + "\["), (".v" + $i + "[")
+    $fullText = $fullText -replace ("\." + $variableName + "\)"), (".v" + $i + ")")
+
+    $i++
 }
 
 
@@ -139,20 +159,22 @@ $currentRemaingText = $splits[1]
 
 $splits = $currentRemaingText -split "--\[\[ CODE START \]\]`r`n", 2
 $settingText = $splits[0]
-$codeText = $splits[1]
+$codeAllText = $splits[1]
 
 
 # ------------------------------------------
 # Do the file wide cleaning.
 # ------------------------------------------
 
-$generalTextsToPass = @{settingText = $settingText
-    codeText = $codeText}
+$generalTextsToPass = @{
+    settingText = $settingText
+    codeAllText = $codeAllText
+}
 foreach ($entry in $generalTextsToPass.GetEnumerator()) {
     $value = $entry.Value
 
-    # Remove any Sumneko TypeDefs and any comments.
-    $value = $value -replace "--\[\[.*?\]\](`r`n)*", ''
+    # Remove any Sumneko TypeDefs and any comments. This can leave empty spaces at the end of a line when the comment was on the end of a line, but wasn't the whole line. As in these cases we can't remove the line break, as then we'd join the code on the line with the next line.
+    $value = $value -replace "--\[\[.*?\]\]", ''
 
     # Removes any extra spacer lines (empty line gaps).
     $value = $value -replace "`r`n`r`n", "`r`n"
@@ -184,24 +206,33 @@ $settingText = $settingText -replace "(; $)", ";"
 # Code cleaning.
 # ------------------------------------------
 
-# Remove any debug blocks - Only handles debug if blocks that have no depth to them.
-$codeText = $codeText -replace "if v\d+._debug then(?:(\s|\S|/n|/r))*?end(`r`n)*", ''
-$codeText = $codeText -replace '_debug = [^,]+,', ''
-
 # Remove the line breaks.
-$codeText = $codeText -replace "`r`n", ';' # Somehow this leaves a trailing `\r\n` I can't remove.
+$codeAllText = $codeAllText -replace "`r`n", ';' # Somehow this leaves a trailing `\r\n` I can't remove.
 
 # Remove the space around operators.
-$codeText = $codeText -replace '\s*([=~<>,+-\/*^{}])\s*', '${1}'
+$codeAllText = $codeAllText -replace '\s*([=~<>,+-\/*^{}])\s*', '${1}'
 
 # Push the version on to its own line.
-$codeText = $codeText -replace '(local version=.*;)$', ("`r`n" + '${1}')
+$codeAllText = $codeAllText -replace '(local version=.*;)$', ("`r`n" + '${1}')
+
 
 
 
 # ------------------------------------------------------------------------------------------------
+# Merge and write out the file.
+# ------------------------------------------------------------------------------------------------
+
+$outputText = $commandCallText + ' ' + $settingText + "`r`n" + $codeAllText
+
+# ------------------------------------------
+# Quick touch up cleaning across whole file.
+# ------------------------------------------
+
+$outputText = $outputText -replace ' ;', ';'
+$outputText = $outputText -replace ';;', ';'
+
+# ------------------------------------------
 # Write out the file.
-# ------------------------------------------------------------------------------------------------
+# ------------------------------------------
 
-$outputText = $commandCallText + ' ' + $settingText + "`r`n" + $codeText
 $outputText | Out-File -FilePath '.\Biter Pet\Biter Pet - Minified.lua'

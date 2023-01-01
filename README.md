@@ -22,7 +22,7 @@ Each script file has a version number variable at the very end of the Lua code. 
 
 ## Making Minified Files
 
-Some larger scripts will have a PowerShell script in their folder to make the minified version of their scripts. This allows the `Readable` version of the script to be developed and then compressed for use. The script will be called `_Minify.ps1` when present. See these files for any usage/limitation comments.
+Some larger scripts will have a PowerShell script in their folder to make the minified version of their scripts. This allows the `Readable` version of the script to be developed and then compressed for use. The script will be called `_Minify.ps1` when present. See these files for any usage/limitation comments. Note that the script will utilise the comment blocks in the sample code to aid its code detection and minification process.
 
 
 

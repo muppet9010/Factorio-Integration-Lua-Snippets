@@ -32,7 +32,7 @@ for evoReq, thisBiterType in pairs(biterTypeSelection) do
 end
 for evoReq, thisBonusHealth in pairs(biterBonusHealthSelection) do
     if evoReq <= enemyEvo then
-        biterBonusHealthMax = thisBonusHealth
+        biterBonusHealthMax = thisBonusHealth --[[@as float]]
     end
 end
 if biterBonusHealthMax > 0 then
@@ -40,7 +40,6 @@ if biterBonusHealthMax > 0 then
     biterHealingPerSecond = biterPrototype.healing_per_tick * 60
     biterMaxHealth = biterPrototype.max_health
 end
---[[@cast biterBonusHealthMax float]]
 local biterSpawnPosition = biterSurface.find_non_colliding_position(biterType, playerPosition, 10, 0.1)
 if biterSpawnPosition == nil then
     return
@@ -64,8 +63,9 @@ local biterAiSettings = biter.ai_settings
 biterAiSettings.allow_destroy_when_commands_fail = false
 biterAiSettings.allow_try_return_to_spawner = false
 biterAiSettings.do_separation = true
---[[@type fun(data: BiterPet_Data)]]
-local followPlayerFunc = function(data)
+
+--[[ Delayed Lua Function ]]
+local followPlayerFunc = --[[@type fun(data: BiterPet_Data)]] function(data)
     if not data._biterSurface.valid then
         return
     end
@@ -208,8 +208,9 @@ local followPlayerFunc = function(data)
     remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncDump, data)
 end
 
---[[@type BiterPet_Data]]
-local data = { _playerObj = playerObj, _biter = biter, _biterSurface = biterSurface, _biterBonusHealthMax = biterBonusHealthMax, _biterBonusHealthCurrent = biterBonusHealthMax, _biterHealingPerSecond = biterHealingPerSecond, _biterMaxHealth = biterMaxHealth, _followPlayerFuncDump = string.dump(followPlayerFunc), _closenessRange = closenessRange, _exploringMaxRange = math.max(exploringMaxRange, 10 + closenessRange), _combatMaxRange = combatMaxRange, _calledBack = false, _following = false, _fighting = false, _biterName = biterName, _hasOwner = true, _lastPosition = biter.position, _debug = false, _biterDetailsSize = biterDetailsSize, _biterDetailsColor = biterDetailsColor, _biterNameRenderId = biterNameRenderId, _biterStateRenderId = biterStateRenderId, _biterHealthRenderId = biterHealthRenderId, _biterDeathMessageDuration = biterDeathMessageDuration, _biterDeathMessagePrint = biterDeathMessagePrint, _biterStatusMessages_Wondering = biterStatusMessages_Wondering, _biterStatusMessages_Following = biterStatusMessages_Following, _biterStatusMessages_Fighting = biterStatusMessages_Fighting, _biterStatusMessages_CallBack = biterStatusMessages_CallBack, _biterStatusMessages_GuardingCorpse = biterStatusMessages_GuardingCorpse, _biterStatusMessages_Dead = biterStatusMessages_Dead }
+--[[ Delayed Lua Data ]]
+local data = --[[@type BiterPet_Data]] { _playerObj = playerObj, _biter = biter, _biterSurface = biterSurface, _biterBonusHealthMax = biterBonusHealthMax, _biterBonusHealthCurrent = biterBonusHealthMax, _biterHealingPerSecond = biterHealingPerSecond, _biterMaxHealth = biterMaxHealth, _followPlayerFuncDump = string.dump(followPlayerFunc), _closenessRange = closenessRange, _exploringMaxRange = math.max(exploringMaxRange, 10 + closenessRange), _combatMaxRange = combatMaxRange, _calledBack = false, _following = false, _fighting = false, _biterName = biterName, _hasOwner = true, _lastPosition = biter.position, _debug = false, _biterDetailsSize = biterDetailsSize, _biterDetailsColor = biterDetailsColor, _biterNameRenderId = biterNameRenderId, _biterStateRenderId = biterStateRenderId, _biterHealthRenderId = biterHealthRenderId, _biterDeathMessageDuration = biterDeathMessageDuration, _biterDeathMessagePrint = biterDeathMessagePrint, _biterStatusMessages_Wondering = biterStatusMessages_Wondering, _biterStatusMessages_Following = biterStatusMessages_Following, _biterStatusMessages_Fighting = biterStatusMessages_Fighting, _biterStatusMessages_CallBack = biterStatusMessages_CallBack, _biterStatusMessages_GuardingCorpse = biterStatusMessages_GuardingCorpse, _biterStatusMessages_Dead = biterStatusMessages_Dead }
 remote.call("muppet_streamer", "add_delayed_lua", 0, data._followPlayerFuncDump, data)
 
+--[[ Version Info ]]
 local version = "1.0.1"
