@@ -1,9 +1,9 @@
 ---@class BiterPet_Data
----@field _player LuaPlayer
+---@field _playerObj LuaPlayer
 ---@field _biter LuaEntity
----@field _surface LuaSurface
----@field _biterBonusHealthMax uint # 0 indicates that this feature isn't being used at all.
----@field _biterBonusHealthCurrent uint
+---@field _biterSurface LuaSurface
+---@field _biterBonusHealthMax float # 0 indicates that this feature isn't being used at all.
+---@field _biterBonusHealthCurrent float
 ---@field _biterHealingPerSecond? float # nil for when the biter doesn't heal each second or when bonus health feature not being used.
 ---@field _biterMaxHealth? float # nil when bonus health feature not being used.
 ---@field _followPlayerFuncDump string
