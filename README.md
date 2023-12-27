@@ -28,5 +28,5 @@ Some larger scripts will have a PowerShell script in their folder to make the mi
 
 ## Useful Titbits
 
-To add a breakpoint in to a Lua script use:
+To add a breakpoint in to a Lua script when runnig Factorio with Visual Studio Code and the Factorio Modding Tool Kit extension use:
 __DebugAdapter.breakpoint()
