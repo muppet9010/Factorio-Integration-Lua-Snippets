@@ -36,7 +36,7 @@ for evoReq, thisBonusHealth in pairs(biterBonusHealthSelection) do
     end
 end
 if biterBonusHealthMax > 0 then
-    biterPrototype = game.entity_prototypes[biterType]
+    biterPrototype = game.entity_prototypes[biterType] --[[@as LuaEntityPrototype]]
     biterHealingPerSecond = biterPrototype.healing_per_tick * 60
     biterMaxHealth = biterPrototype.max_health
 end
@@ -49,7 +49,7 @@ if biter == nil then
     return
 end
 biterName = biterName or ""
-local biterNameRenderId, biterStateRenderId, biterHealthRenderId
+local biterNameRenderId, biterStateRenderId, biterHealthRenderId = nil, nil, nil
 if biterDetailsSize > 0 then
     local stickerBox = biterPrototype.sticker_box --[[@as BoundingBox]]
     local stickerBoxLargestSize = math.max(stickerBox.right_bottom.x - stickerBox.left_top.x, stickerBox.right_bottom.y - stickerBox.left_top.y) * 1.5
@@ -65,7 +65,7 @@ biterAiSettings.allow_try_return_to_spawner = false
 biterAiSettings.do_separation = true
 
 --[[ Delayed Lua Function ]]
-local followPlayerFunc = --[[@type fun(data: BiterPet_Data)]] function(data)
+local followPlayerFuncString = [==[ --[[@type fun(data: BiterPet_Data)]] function(data)
     if not data._biterSurface.valid then
         return
     end
@@ -122,7 +122,7 @@ local followPlayerFunc = --[[@type fun(data: BiterPet_Data)]] function(data)
             end
             data._hasOwner = false
         end
-        remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncDump, data)
+        remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncString, data)
         return
     end
     local biterPosition, targetEntityPosition = data._biter.position, targetEntity.position
@@ -139,7 +139,7 @@ local followPlayerFunc = --[[@type fun(data: BiterPet_Data)]] function(data)
             data._calledBack = false
             data._following = false
         end
-        remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncDump, data)
+        remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncString, data)
         return
     end
     if biterPlayerDistance > data._exploringMaxRange + 1 then
@@ -205,12 +205,12 @@ local followPlayerFunc = --[[@type fun(data: BiterPet_Data)]] function(data)
             end
         end
     end
-    remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncDump, data)
-end
+    remote.call("muppet_streamer", "add_delayed_lua", 60, data._followPlayerFuncString, data)
+end]==]
 
 --[[ Delayed Lua Data ]]
-local data = --[[@type BiterPet_Data]] { _playerObj = playerObj, _biter = biter, _biterSurface = biterSurface, _biterBonusHealthMax = biterBonusHealthMax, _biterBonusHealthCurrent = biterBonusHealthMax, _biterHealingPerSecond = biterHealingPerSecond, _biterMaxHealth = biterMaxHealth, _followPlayerFuncDump = string.dump(followPlayerFunc), _closenessRange = closenessRange, _exploringMaxRange = math.max(exploringMaxRange, 10 + closenessRange), _combatMaxRange = combatMaxRange, _calledBack = false, _following = false, _fighting = false, _biterName = biterName, _hasOwner = true, _lastPosition = biter.position, _debug = false, _biterDetailsSize = biterDetailsSize, _biterDetailsColor = biterDetailsColor, _biterNameRenderId = biterNameRenderId, _biterStateRenderId = biterStateRenderId, _biterHealthRenderId = biterHealthRenderId, _biterDeathMessageDuration = biterDeathMessageDuration, _biterDeathMessagePrint = biterDeathMessagePrint, _biterStatusMessages_Wondering = biterStatusMessages_Wondering, _biterStatusMessages_Following = biterStatusMessages_Following, _biterStatusMessages_Fighting = biterStatusMessages_Fighting, _biterStatusMessages_CallBack = biterStatusMessages_CallBack, _biterStatusMessages_GuardingCorpse = biterStatusMessages_GuardingCorpse, _biterStatusMessages_Dead = biterStatusMessages_Dead }
-remote.call("muppet_streamer", "add_delayed_lua", 0, data._followPlayerFuncDump, data)
+local data = --[[@type BiterPet_Data]] { _playerObj = playerObj, _biter = biter, _biterSurface = biterSurface, _biterBonusHealthMax = biterBonusHealthMax, _biterBonusHealthCurrent = biterBonusHealthMax, _biterHealingPerSecond = biterHealingPerSecond, _biterMaxHealth = biterMaxHealth, _followPlayerFuncString = followPlayerFuncString, _closenessRange = closenessRange, _exploringMaxRange = math.max(exploringMaxRange, 10 + closenessRange), _combatMaxRange = combatMaxRange, _calledBack = false, _following = false, _fighting = false, _biterName = biterName, _hasOwner = true, _lastPosition = biter.position, _debug = false, _biterDetailsSize = biterDetailsSize, _biterDetailsColor = biterDetailsColor, _biterNameRenderId = biterNameRenderId, _biterStateRenderId = biterStateRenderId, _biterHealthRenderId = biterHealthRenderId, _biterDeathMessageDuration = biterDeathMessageDuration, _biterDeathMessagePrint = biterDeathMessagePrint, _biterStatusMessages_Wondering = biterStatusMessages_Wondering, _biterStatusMessages_Following = biterStatusMessages_Following, _biterStatusMessages_Fighting = biterStatusMessages_Fighting, _biterStatusMessages_CallBack = biterStatusMessages_CallBack, _biterStatusMessages_GuardingCorpse = biterStatusMessages_GuardingCorpse, _biterStatusMessages_Dead = biterStatusMessages_Dead }
+remote.call("muppet_streamer", "add_delayed_lua", 0, data._followPlayerFuncString, data)
 
 --[[ Version Info ]]
-local version = "1.0.1"
+local version = "2.0.0"

@@ -6,7 +6,7 @@
 ---@field _biterBonusHealthCurrent float
 ---@field _biterHealingPerSecond? float # nil for when the biter doesn't heal each second or when bonus health feature not being used.
 ---@field _biterMaxHealth? float # nil when bonus health feature not being used.
----@field _followPlayerFuncDump string
+---@field _followPlayerFuncString string
 ---@field _closenessRange uint
 ---@field _exploringMaxRange uint
 ---@field _combatMaxRange uint
