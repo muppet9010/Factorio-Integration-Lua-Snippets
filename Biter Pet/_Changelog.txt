@@ -1,4 +1,12 @@
-Version 1.0.1 - 06-12-2022
+Version 2.0.0 - 2023-12-27
+--------------------------
+
+- Updated code to work with Muppet Streamer version 20.2.42. This version of the mod is a breaking change to the previous version for the Delayed Lua feature that the Biter Pet uses.
+- No functional changes to the behavior or options of Biters Pet. So only the bit below the `--[[ CODE START ]]` needs updating to your integration tools. The options section at the top can remain unchanged.
+
+
+
+Version 1.0.1 - 2022-12-06
 --------------------------
 
 - Death messages can be printed in chat again, in addition to as a label near the dead biter.
@@ -9,7 +17,7 @@ Version 1.0.1 - 06-12-2022
 
 
 
-Version 1.0.0 - 04-12-2022
+Version 1.0.0 - 2022-12-04
 --------------------------
 
 - Biter Pet in its first release state. It is fully documented and all customisable settings are on the first lines of the script.
