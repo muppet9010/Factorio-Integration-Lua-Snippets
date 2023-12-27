@@ -3,12 +3,19 @@
 
 
 
+# ------------------------------------------------------------------------------------------------
+# Set contexrt to PowerShell script location.
+# ------------------------------------------------------------------------------------------------
+
+Push-Location $PSScriptRoot
+
+
 
 # ------------------------------------------------------------------------------------------------
 # Get the full text of the script as one text block.
 # ------------------------------------------------------------------------------------------------
 
-$fullText = Get-Content -Path ".\Biter Pet\Biter Pet - Readable.lua" -Raw
+$fullText = Get-Content -Path ".\Biter Pet - Readable.lua" -Raw
 
 
 
@@ -235,4 +242,4 @@ $outputText = $outputText -replace ';;', ';'
 # Write out the file.
 # ------------------------------------------
 
-$outputText | Out-File -FilePath '.\Biter Pet\Biter Pet - Minified.lua'
+$outputText | Out-File -FilePath '.\Biter Pet - Minified.lua'
